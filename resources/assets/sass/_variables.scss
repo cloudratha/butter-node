@@ -1,0 +1,11 @@
+$family-sans-serif : 'Montserrat', sans-serif;
+$nav-height: 9.5em;
+$primary: #fc4f6b;
+$secondary: #f3e7bd;
+$text: $primary;
+$text-invert: #ffd6de;
+$text-strong: $text;
+$link: $text;
+$text-light: $text;
+$link-hover: darken( $text, 20% );
+$link-active: $link-hover;

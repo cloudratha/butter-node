@@ -1,0 +1,101 @@
+
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,700');
+
+// Variables
+@import "variables";
+
+// Bulma
+@import "node_modules/bulma/bulma";
+@import "node_modules/fullpage.js/dist/jquery.fullpage";
+
+body, html {
+    margin: 0;
+    padding: 0;
+    background-color: #ffd6de;
+}
+
+nav.nav {
+    & > .container,
+    &.is-fixed-top {
+        @include mobile {
+            min-height: 0;
+        }
+    }
+    &.is-fixed-top {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+    }
+    .nav-item img {
+        min-height: 5.75rem;
+    }
+    .nav-left {
+        overflow-x: hidden;
+    }
+    .nav-right {
+        display: flex;
+        justify-content: flex-end;
+        position: initial;
+        max-height: 4em;
+        margin-top: 2em;
+        background-color: transparent;
+        box-shadow: none;
+    }
+}
+
+body:not(.home) {
+    @include mobile {
+        nav.is-fixed-top {
+            position: relative;
+        }
+        .hero.is-fullheight {
+            min-height: 0;
+        }
+    }
+}
+
+.is-pink {
+    background-color: #ffd6de;
+}
+
+.is-trans {
+    background-color: rgba(0,0,0,0);
+}
+
+a.nav-item.is-tab {
+    border-bottom: 3px solid transparent;
+}
+
+.card {
+    color: $secondary;
+    background-color: $primary;
+    box-shadow: 0 -1px 0 #e0e0e0,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+    border-radius: 4px;
+    h1 {
+        color: $secondary;
+    }
+}
+
+div.is-loading {
+    &:after {
+        -webkit-animation: spinAround 500ms infinite linear;
+        animation: spinAround 500ms infinite linear;
+        border: 4px solid $primary;
+        border-radius: 290486px;
+        border-right-color: transparent;
+        border-top-color: transparent;
+        content: "";
+        display: block;
+        height: 2rem;
+        position: relative;
+        width: 2rem;
+        left: 50%;
+        margin-left: -8px;
+        margin-top: -8px;
+        position: absolute;
+        top: 50%;
+        position: absolute !important;
+    }
+}
