@@ -1,6 +1,9 @@
+import Vue from 'vue';
 const state = {
     user: null,
-    auth: false
+    auth: false,
+    processing: false,
+    error: null
 }
 
 
@@ -11,14 +14,32 @@ const mutations =
         state.auth = !!localStorage.getItem( 'token' )
         if ( state.auth )
         {
-            window.axios.defaults.headers.common.Authorization = 'Bearer ' + localStorage.getItem( 'token' )
+            Vue.$http.defaults.headers.common.Authorization = 'Bearer ' + localStorage.getItem( 'token' )
         }
     },
-    LOGIN: ( state, token )
+    LOGIN_SUCCESS: ( state, token ) =>
     {
         state.auth = true
         localStorage.setItem( 'token', token )
-        window.axios.defaults.headers.common.Authorization = 'Bearer ' + token
+        Vue.$http.defaults.headers.common.Authorization = 'Bearer ' + token
+    },
+    LOGIN_ERROR: ( state, error ) =>
+    {
+        state.error = error
+    },
+    LOGOUT: ( state ) =>
+    {
+        state.auth = false;
+        localStorage.removeItem( 'token' );
+        Vue.$http.defaults.headers.common.Authorization = '';
+    },
+    PROCESS_START: () =>
+    {
+        state.processing = true
+    },
+    PROCESS_END: () =>
+    {
+        state.processing = false
     }
 }
 
@@ -29,13 +50,23 @@ const actions = {
     },
     login( { commit }, token )
     {
-
+        commit( 'LOGIN_SUCCESS', token )
+    },
+    loginError( { commit }, error )
+    {
+        commit( 'LOGIN_ERROR', error )
     },
     logout( {commit} )
     {
-        state.auth = false;
-        localStorage.removeItem('id_token');
-        window.axios.defaults.headers.common.Authorization = '';
+        commit( 'LOGOUT' )
+    },
+    processStart( {commit} )
+    {
+        commit( 'PROCESS_START' )
+    },
+    processEnd( {commit} )
+    {
+        commit( 'PROCESS_END' )
     }
 }
 

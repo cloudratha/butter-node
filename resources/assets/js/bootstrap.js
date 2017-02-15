@@ -1,27 +1,76 @@
 import Vue from 'vue'
-import VueRouter from 'vue-router'
+
+Vue.config.debug = process.env.NODE_ENV !== 'production';
+
 import axios from 'axios'
 
-window.Vue = Vue;
+import VueRouter from 'vue-router'
+import routes from './routes'
 
 Vue.use( VueRouter )
 
-window.axios = axios;
+// History Mode to remove Hashbang
+export const router = new VueRouter({
+    mode: 'history',
+    routes
+})
 
-window.axios.defaults.headers.common = {
+// Bind axios to Vue Instance
+Vue.$http = axios;
+
+// Global Guard - Leveraged as Auth Route Middleware
+// See Routes > meta
+router.beforeEach( (to, from, next) =>
+{
+    if (to.matched.some(m => m.meta.auth) && !store.state.auth.user)
+    {
+        next({
+            name: 'login',
+        })
+    } else if (to.matched.some(m => m.meta.guest) && store.state.auth.user)
+    {
+        next({
+            name: 'home',
+        })
+    } else
+    {
+        next()
+    }
+})
+
+// Add Route Name to Body Class
+router.afterEach( () =>
+{
+    document.body.className = store.state.route.name
+})
+
+import { sync } from 'vuex-router-sync'
+import store from './store'
+
+// Sync Router State to Store
+sync(store, router)
+
+store.dispatch( 'authCheck' )
+
+// Automatically logout user if we get Unauthorised Response
+axios.interceptors.response.use( response => response,
+    (error) =>
+    {
+        if ( error.response.status === 401 )
+        {
+            store.dispatch( 'logout' )
+        }
+    }
+);
+
+// Attach CSRF from Adonis Global - Master View
+axios.defaults.headers.common = {
     'X-CSRF-TOKEN': window.Adonis.csrfToken,
     'X-Requested-With': 'XMLHttpRequest'
 };
 
-/**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
- */
 
-// import Echo from "laravel-echo"
 
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: 'your-pusher-key'
-// });
+export default {
+    router
+}

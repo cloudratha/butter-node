@@ -1,22 +1,22 @@
 <template>
-    <div :class="{ 'is-loading': !$store.state.auth.check }">
-        <div v-if="$store.state.auth.check">
-            <nav-header></nav-header>
-            <router-view ></router-view>
-        </div>
+    <div>
+        <nav-header></nav-header>
+        <router-view></router-view>
     </div>
 </template>
 <script>
+    import store from './store';
+    import { router } from './bootstrap';
     import NavHeader from './views/partials/NavHeader'
     export default {
-        route: {
-            waitForData: true,
-            data (transition)
-            {
-                return this.$store.dispatch( 'authCheck')
-            }
+        store,
+        router,
+        mounted()
+        {
+            // if (this.$store.state.auth.authenticated) {
+            //     this.$store.dispatch( 'getUser');
+            // }
         },
-        name: 'butter',
         components: {
             NavHeader
         }
