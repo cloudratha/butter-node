@@ -1,7 +1,5 @@
-import VueRouter from 'vue-router'
-
 // Routes
-const routes = [
+export default [
     {
         name: 'home',
         path: '/',
@@ -48,11 +46,3 @@ const routes = [
         }
     }
 ]
-
-// History Mode to remove Hashbang
-const router = new VueRouter({
-    mode: 'history',
-    routes
-})
-
-export default router

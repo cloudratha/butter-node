@@ -17,4 +17,9 @@
 
 const Route = use('Route')
 
+Route.group('api', () =>
+{
+    Route.post('login', 'AuthController.login')
+}).prefix('api')
+
 Route.any('*', 'ServerController.render')

@@ -12,10 +12,10 @@
                             <p class="control">
                                 <input v-model="password" class="input is-medium" type="password" placeholder="Password">
                             </p>
-                            <p v-if="error">{{ error }}</p>
+                            <p v-if="$store.state.auth.error">{{ $store.state.auth.error }}</p>
                             <button @click.prevent="login"
                             class="button is-dark is-medium"
-                            :class="{ 'is-loading': async }">Login</button>
+                            :class="{ 'is-loading': $store.state.auth.processing }">Login</button>
                         </form>
                     </div>
                 </div>
@@ -25,7 +25,7 @@
     </section>
 </template>
 <script>
-import axios from 'axios'
+    import auth from '../services/auth'
     export default {
         data()
         {
@@ -39,27 +39,10 @@ import axios from 'axios'
         methods: {
             login()
             {
-                this.async = true
-
-                axios.post('/api/login', {
+                auth.login(  {
                     email: this.email,
                     password: this.password
-                }).then( (response) =>
-                {
-                    this.async = false
-                    this.$store.dispatch( 'authInit', response )
-                    this.$router.push( 'account' )
-                }).catch( (errors) => {
-                    this.async = false
-                    if ( errors.response )
-                    {
-                        this.error = 'Your email and password combination does not match.'
-                    } else
-                    {
-                        // System error if axios doesnt return a response bag
-                        this.error = 'We are unable to authenticate you. Please try again later.'
-                    }
-                });
+                })
             }
         }
     }
