@@ -22,7 +22,7 @@ export default (user) =>
 {
     store.dispatch( 'processStart' )
     Vue.$http.post( '/api/register', user )
-    .then( ( { data } ) =>
+    .then( ( data ) =>
     {
         success( data )
     }).catch( ( { response } ) =>
