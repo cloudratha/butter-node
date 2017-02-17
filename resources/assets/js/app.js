@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import * as App from './App'
+import * as Master from './Master'
 require('./bootstrap')
 
 
 
 
-new Vue(App).$mount('#app');
+new Vue(Master).$mount('#app');

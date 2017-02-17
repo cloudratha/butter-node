@@ -29,7 +29,7 @@ DB_DATABASE=adonis
 
 Run the Database migrations
 ```terminal
-./ace run migration
+./ace migration:run
 ```
 > Make sure the permissions on ace are executable
 
