@@ -2,7 +2,7 @@ import Vue from 'vue';
 import store from './../../store';
 
 // When the request succeeds
-const success = ( user ) =>
+const success = ( { user } ) =>
 {
     store.dispatch( 'login', user )
     store.dispatch( 'processEnd' )
