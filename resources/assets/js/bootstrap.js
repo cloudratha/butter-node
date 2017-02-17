@@ -20,8 +20,7 @@ export const router = new VueRouter({
 // See Routes > meta
 router.beforeEach( (to, from, next) =>
 {
-    console.log(store.state.auth.user)
-    if (to.matched.some(m => m.meta.verify) && ( store.state.auth.user === null || !store.state.auth.user.active ) )
+    if (to.matched.some(m => m.meta.verify) && !store.state.auth.active )
     {
         next({
             name: 'login',

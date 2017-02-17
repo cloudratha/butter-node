@@ -4,7 +4,8 @@ const state = {
     user: null,
     auth: false,
     processing: false,
-    error: null
+    error: null,
+    active: null
 }
 
 
@@ -25,12 +26,14 @@ const mutations =
         state.auth = true
         localStorage.setItem( 'token', data.token )
         state.user = data.user
+        state.active = data.user.active
         localStorage.setItem( 'user', JSON.stringify(data.user) )
         Vue.$http.defaults.headers.common.Authorization = 'Bearer ' + data.token
     },
     VERIFY: (state, { user } ) =>
     {
         state.user = user
+        state.active = user.active
         localStorage.setItem( 'user' , JSON.stringify(user) )
     },
     AUTH_ERROR: ( state, error ) =>
@@ -39,8 +42,9 @@ const mutations =
     },
     LOGOUT: ( state ) =>
     {
-        state.auth = false;
-        state.user = null;
+        state.auth = false
+        state.user = null
+        state.active = false
         localStorage.removeItem( 'token' );
         localStorage.removeItem( 'user' );
         Vue.$http.defaults.headers.common.Authorization = '';
