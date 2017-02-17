@@ -11,10 +11,10 @@
                                     <input ref="token" class="input is-medium" type="text" maxlength="1" @keyup="autoFocus">
                                 </p>
                             </div>
-                            <p v-if="error">{{ error }}</p>
+                            <p v-if="errors">{{ errors }}</p>
                             <button @click.prevent="verify"
                             class="button is-dark is-medium"
-                            :class="{ 'is-loading': async }">Verify</button>
+                            :class="{ 'is-loading': $store.state.auth.processing }">Verify</button>
                         </form>
                     </div>
                 </div>
@@ -24,13 +24,19 @@
     </section>
 </template>
 <script>
-import axios from 'axios'
+import auth from '../services/auth'
     export default {
         data()
         {
             return {
-                error: null,
-                async: false
+                error: null
+            }
+        },
+        computed:
+        {
+            errors()
+            {
+                return ( this.error ) ? this.error : this.$store.state.auth.error;
             }
         },
         methods: {
@@ -61,26 +67,9 @@ import axios from 'axios'
                     return
                 }
 
-                this.async = true
-
-                axios.post('/api/verify', {
+                auth.verify({
                     verify: this.token()
-                }).then( (response) =>
-                {
-                    this.async = false
-                    this.$store.dispatch( 'authInit', response )
-                    this.$router.push( 'account' )
-                }).catch( (errors) => {
-                    this.async = false
-                    if ( errors.response )
-                    {
-                        this.error = 'Your verification failed. Please try again.'
-                    } else
-                    {
-                        // System error if axios doesnt return a response bag
-                        this.error = 'We are unable to verify you. Please try again later.'
-                    }
-                });
+                })
             },
             validate()
             {
@@ -107,19 +96,6 @@ import axios from 'axios'
                 return token
             }
         },
-
-        beforeRouteEnter(to, from, next)
-        {
-            next( vm =>
-            {
-                let user = vm.$store.state.auth.user
-                if ( user && user.active )
-                {
-
-                    next('/order');
-                }
-            })
-        }
     }
 </script>
 <style lang="scss" rel="stylesheet/scss">

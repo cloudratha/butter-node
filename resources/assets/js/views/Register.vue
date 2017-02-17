@@ -4,7 +4,7 @@
             <div class="container has-text-centered">
                 <div class="card content">
                     <div class="card-content">
-                        <img src="images/butter-slice.svg" alt="Butter Slice">
+                        <img src="/images/butter-slice.svg" alt="Butter Slice">
                         <h1>Registration</h1>
                         <form ref="register">
                             <p class="control">
@@ -35,9 +35,9 @@
                                 <input name="password_confirm" class="input is-medium" type="password" placeholder="Confirm Password" v-model="password_confirm">
                                 <span v-if="validation.hasError('password_confirm')" class="help">{{ validation.firstError('password_confirm') }}</span>
                             </p>
-                            <p v-if="error">{{ error }}</p>
+                            <p v-if="$store.state.auth.error">{{ $store.state.auth.error }}</p>
                             <button class="button is-dark is-medium"
-                                v-bind:class="{'is-loading': async}"
+                                :class="{ 'is-loading': $store.state.auth.processing }"
                                 @click.prevent="register">Register</button>
                         </form>
                     </div>
@@ -48,9 +48,10 @@
     </section>
 </template>
 <script>
+import auth from '../services/auth'
 const SimpleVueValidation = require('simple-vue-validator')
 const Validator = SimpleVueValidation.Validator;
-import axios from 'axios'
+
     export default {
         mixins: [ SimpleVueValidation.mixin],
         data()
@@ -109,45 +110,13 @@ import axios from 'axios'
                     return;
                 }
 
-                // Validatioin Passed
-                this.async = true;
-
-                axios.post( '/api/register', {
+                auth.register({
                     name: this.name,
                     surname: this.surname,
                     email: this.email,
-                    mobile: this.mobile,
+                    mobile: '+27' + this.mobile,
                     password: this.password,
                     password_confirmation: this.password_confirm
-                } ).then( (response) =>
-                {
-                    this.async = false
-                    this.$store.dispatch( 'authInit', response )
-                    this.$router.push( 'account' )
-                }).catch( (errors) =>
-                {
-                    this.async = false
-
-                    if ( errors.response )
-                    {
-                        if ( errors.response.data.hasOwnProperty('error') )
-                        {
-                            this.error = 'Unable to authenticate you. Please try again later.'
-                            return
-                        }
-                        let data = errors.response.data
-                        for ( let error in data )
-                        {
-                            for ( let message of data[error] )
-                            {
-                                this.validation.addError( error, message )
-                            }
-                        }
-                    } else
-                    {
-                        // System error if axios doesnt return a response bag
-                        this.error = 'We are unable to process registration at this time. Please try again later.'
-                    }
                 })
             }
         }

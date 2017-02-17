@@ -73,8 +73,8 @@
                 keyboardStep: 5,
                 needsUpdate: null,
                 active: null,
-                activeTime: 1487052000, // 14 Feb 08:00
-                endTime: 1487095200, // 14 Feb 20:00
+                activeTime: 1487318400, // 14 Feb 08:00
+                endTime: 1487448000, // 14 Feb 20:00
                 interval: 900, // 15 minutes
                 currentTime: Math.trunc((new Date()).getTime() / 1000),
                 //currentTime: 1487072000,

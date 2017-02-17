@@ -27,52 +27,7 @@
 <script>
 import axios from 'axios'
     export default {
-        data()
-        {
-            return {
-                email: '',
-                password: '',
-                error: null,
-                async: false
-            }
-        },
-        methods: {
-            login()
-            {
-                this.async = true
 
-                axios.post('/api/login', {
-                    email: this.email,
-                    password: this.password
-                }).then( (response) =>
-                {
-                    this.async = false
-                    this.$store.dispatch( 'authInit', response )
-                    this.$router.push( 'account' )
-                }).catch( (errors) => {
-                    this.async = false
-                    if ( errors.response )
-                    {
-                        this.error = 'Your email and password combination does not match.'
-                    } else
-                    {
-                        // System error if axios doesnt return a response bag
-                        this.error = 'We are unable to authenticate you. Please try again later.'
-                    }
-                });
-            }
-        },
-        beforeRouteEnter(to, from, next)
-        {
-            next( vm =>
-            {
-                console.log(vm.$store)
-                if ( vm.$store.state.auth.user )
-                {
-                    next(from.fullPath);
-                }
-            })
-        }
     }
 </script>
 <style lang="scss" rel="stylesheet/scss">

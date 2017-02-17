@@ -25,18 +25,12 @@
     </nav>
 </template>
 <script>
-import axios from 'axios'
+import auth from '../../services/auth'
     export default {
         methods: {
             logout()
             {
-                axios.get( '/api/logout' )
-                .then( ( response ) =>
-                {
-                    this.$store.dispatch( 'authInit', {} )
-                    this.$route.push( 'home' )
-                })
-
+                auth.logout()
             }
         }
     }

@@ -2,29 +2,31 @@ import Vue from 'vue';
 import store from './../../store';
 
 // When the request succeeds
-const success = (token) => {
+const success = ( user ) =>
+{
+    store.dispatch( 'login', user )
     store.dispatch( 'processEnd')
-    store.dispatch('login', token)
     Vue.router.push({
         name: 'home'
     });
 };
 
 // When the request fails
-const failed = ( response ) => {
+const failed = ( response ) =>
+{
     store.dispatch( 'processEnd')
-    store.dispatch('loginError', response )
+    store.dispatch( 'authError', response )
 };
 
 export default (user) =>
 {
     store.dispatch( 'processStart')
     Vue.$http.post( '/api/login', user )
-        .then( (data) =>
+        .then( function(data)
         {
             success( data )
         })
-        .catch( ( { error } ) =>
+        .catch( function( error )
         {
             failed( error )
         });

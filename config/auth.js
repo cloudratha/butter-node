@@ -31,7 +31,7 @@ module.exports = {
   session: {
     serializer: 'Lucid',
     model: 'App/Model/User',
-    scheme: 'jwt',
+    scheme: 'session',
     secret: Config.get('app.appKey'),
     options: {
       expiresIn: 60 * 60 * 12
@@ -69,7 +69,10 @@ module.exports = {
     scheme: 'jwt',
     uid: 'email',
     password: 'password',
-    secret: Config.get('app.appKey')
+    secret: Config.get('app.appKey'),
+    options: {
+      expiresIn: 60 * 60 * 12
+    }
   },
 
   /*

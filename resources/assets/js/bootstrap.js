@@ -15,14 +15,18 @@ export const router = new VueRouter({
     routes
 })
 
-// Bind axios to Vue Instance
-Vue.$http = axios;
 
 // Global Guard - Leveraged as Auth Route Middleware
 // See Routes > meta
 router.beforeEach( (to, from, next) =>
 {
-    if (to.matched.some(m => m.meta.auth) && !store.state.auth.user)
+    console.log(store.state.auth.user)
+    if (to.matched.some(m => m.meta.verify) && ( store.state.auth.user === null || !store.state.auth.user.active ) )
+    {
+        next({
+            name: 'login',
+        })
+    } else if (to.matched.some(m => m.meta.auth) && !store.state.auth.user)
     {
         next({
             name: 'login',
@@ -44,22 +48,24 @@ router.afterEach( () =>
     document.body.className = store.state.route.name
 })
 
+Vue.router = router;
+
 import { sync } from 'vuex-router-sync'
 import store from './store'
 
 // Sync Router State to Store
 sync(store, router)
 
-store.dispatch( 'authCheck' )
-
 // Automatically logout user if we get Unauthorised Response
 axios.interceptors.response.use( response => response,
     (error) =>
     {
-        if ( error.response.status === 401 )
+        if ( store.state.auth.user && error.response.status === 401 )
         {
             store.dispatch( 'logout' )
         }
+        // Return a promise to persist the chain
+        return Promise.reject(error)
     }
 );
 
@@ -69,6 +75,11 @@ axios.defaults.headers.common = {
     'X-Requested-With': 'XMLHttpRequest'
 };
 
+// Bind axios to Vue Instance
+Vue.$http = axios;
+
+// Check Local Storage For Token
+store.dispatch( 'authCheck' )
 
 
 export default {

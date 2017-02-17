@@ -42,7 +42,7 @@ export default [
         path: '/order',
         component: require('./views/Order'),
         meta: {
-            auth: true
+            verify: true
         }
     }
 ]

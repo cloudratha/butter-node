@@ -1,4 +1,5 @@
 import Vue from 'vue';
+
 const state = {
     user: null,
     auth: false,
@@ -9,32 +10,44 @@ const state = {
 
 const mutations =
 {
-    CHECK_AUTH: ( state ) =>
+    AUTH_CHECK: ( state ) =>
     {
         state.auth = !!localStorage.getItem( 'token' )
         if ( state.auth )
         {
             Vue.$http.defaults.headers.common.Authorization = 'Bearer ' + localStorage.getItem( 'token' )
+            state.user = JSON.parse( localStorage.getItem( 'user' ) )
+
         }
     },
-    LOGIN_SUCCESS: ( state, token ) =>
+    LOGIN: ( state, data ) =>
     {
         state.auth = true
-        localStorage.setItem( 'token', token )
-        Vue.$http.defaults.headers.common.Authorization = 'Bearer ' + token
+        localStorage.setItem( 'token', data.token )
+        state.user = data.user
+        localStorage.setItem( 'user', JSON.stringify(data.user) )
+        Vue.$http.defaults.headers.common.Authorization = 'Bearer ' + data.token
     },
-    LOGIN_ERROR: ( state, error ) =>
+    VERIFY: (state, { user } ) =>
+    {
+        state.user = user
+        localStorage.setItem( 'user' , JSON.stringify(user) )
+    },
+    AUTH_ERROR: ( state, error ) =>
     {
         state.error = error
     },
     LOGOUT: ( state ) =>
     {
         state.auth = false;
+        state.user = null;
         localStorage.removeItem( 'token' );
+        localStorage.removeItem( 'user' );
         Vue.$http.defaults.headers.common.Authorization = '';
     },
     PROCESS_START: () =>
     {
+        state.error = null
         state.processing = true
     },
     PROCESS_END: () =>
@@ -46,15 +59,35 @@ const mutations =
 const actions = {
     authCheck( { commit } )
     {
-        commit( 'CHECK_AUTH')
+        commit( 'AUTH_CHECK')
     },
-    login( { commit }, token )
+    login( { commit }, { data } )
     {
-        commit( 'LOGIN_SUCCESS', token )
+        commit( 'LOGIN', data )
     },
-    loginError( { commit }, error )
+    verify( {commit}, user )
     {
-        commit( 'LOGIN_ERROR', error )
+        commit( 'VERIFY', user )
+    },
+    authError( { commit }, error )
+    {
+        if ( typeof error === 'object' )
+        {
+            for ( let index in error )
+            {
+                if ( error[index].hasOwnProperty( 'message') )
+                {
+                    commit( 'AUTH_ERROR', error[index].message )
+                    break
+                }
+            }
+            if ( error.hasOwnProperty('error') )
+            {
+                commit( 'AUTH_ERROR', error.error )
+                return
+            }
+        }
+        commit( 'AUTH_ERROR', error )
     },
     logout( {commit} )
     {

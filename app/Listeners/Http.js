@@ -12,25 +12,25 @@ const Http = exports = module.exports = {}
  * @param  {Object} response
  */
 Http.handleError = function * (error, request, response) {
-  const status = error.status || 500
+    const status = error.status || 500
 
-  /**
-   * DEVELOPMENT REPORTER
-   */
-  if (Env.get('NODE_ENV') === 'development') {
-    const youch = new Youch(error, request.request)
-    const type = request.accepts('json', 'html')
-    const formatMethod = type === 'json' ? 'toJSON' : 'toHTML'
-    const formattedErrors = yield youch[formatMethod]()
-    response.status(status).send(formattedErrors)
-    return
-  }
+      /**
+       * DEVELOPMENT REPORTER
+       */
+    if (Env.get('NODE_ENV') === 'development') {
+        const youch = new Youch(error, request.request)
+        const type = request.accepts('json', 'html')
+        const formatMethod = type === 'json' ? 'toJSON' : 'toHTML'
+        const formattedErrors = yield youch[formatMethod]()
+        response.status(status).send(formattedErrors)
+        return
+    }
 
-  /**
-   * PRODUCTION REPORTER
-   */
-  console.error(error.stack)
-  yield response.status(status).sendView('errors/index', {error})
+    /**
+    * PRODUCTION REPORTER
+    */
+    console.error(error.stack)
+    yield response.status(status).sendView('errors/index', {error})
 }
 
 /**
@@ -38,4 +38,5 @@ Http.handleError = function * (error, request, response) {
  * starting http server.
  */
 Http.onStart = function () {
+//
 }

@@ -20,6 +20,9 @@ const Route = use('Route')
 Route.group('api', () =>
 {
     Route.post('login', 'AuthController.login')
+    Route.post('register', 'AuthController.register')
+
+    Route.post('verify', 'AuthController.verify').middleware('auth')
 }).prefix('api')
 
 Route.any('*', 'ServerController.render')

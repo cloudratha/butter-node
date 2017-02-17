@@ -11,12 +11,6 @@
     export default {
         store,
         router,
-        mounted()
-        {
-            // if (this.$store.state.auth.authenticated) {
-            //     this.$store.dispatch( 'getUser');
-            // }
-        },
         components: {
             NavHeader
         }
