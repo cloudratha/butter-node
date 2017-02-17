@@ -7,7 +7,7 @@ const success = ( user ) =>
     store.dispatch( 'login', user )
     store.dispatch( 'processEnd' )
     Vue.router.push({
-        name: 'home'
+        name: 'verify'
     });
 };
 
